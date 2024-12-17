@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: Validate that a swap of USDT to BTC is executed successfully, with real-time rates displayed before confirmation
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 47.25 s <<< FAILURE! -- in Validate that a swap of USDT to BTC is executed successfully, with real-time rates displayed before confirmation
+Validate that a swap of USDT to BTC is executed successfully, with real-time rates displayed before confirmation.Swap of USDT to BTC -- Time elapsed: 47.25 s <<< FAILURE!
+java.lang.AssertionError: expected:<1.0000690047613285> but was:<0.001000069>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:555)
+	at org.junit.Assert.assertEquals(Assert.java:685)
+	at bilira.step_definitions.Swap_StepDefinitions.theUserValidatesTheValueOfTheApproximateAmountTheyWantToSwapUsingTheApproximatePriceInformationDisplayedOnTheUi(Swap_StepDefinitions.java:186)
+	at ✽.The user validates the value of the approximate amount they want to swap using the approximate price information displayed on the ui(file:///home/livde/IdeaProjects/Bilira/src/test/resources/Swap_100_USDT_to_BTC.feature:22)
+
