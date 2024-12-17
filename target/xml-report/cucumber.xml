@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="Cucumber" time="30.961" tests="1" skipped="0" failures="0" errors="0">
-<testcase classname="Validate with e-mail otp that a swap of USDT to BTC is executed successfully, with real-time rates displayed before confirmation" name="Swap of USDT to BTC" time="28.97">
+<testsuite name="Cucumber" time="29.484" tests="1" skipped="0" failures="0" errors="0">
+<testcase classname="Validate with e-mail otp that a swap of USDT to BTC is executed successfully, with real-time rates displayed before confirmation" name="Swap of USDT to BTC" time="28.032">
 <system-out><![CDATA[
 Given The user goes to the url..............................................passed
 When The user accepts the cookie on the page................................passed
