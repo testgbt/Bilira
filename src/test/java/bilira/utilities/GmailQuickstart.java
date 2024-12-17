@@ -63,47 +63,55 @@ public class GmailQuickstart {
         int attempt = 0;
         boolean newMessageFound = false;
 
+        // Son 1 dakika içerisindeki mesajları kontrol et
+        long oneMinuteAgo = System.currentTimeMillis() - 60000; // Son 1 dakika
+
         while (attempt < maxAttempts && !newMessageFound) {
             // Yeni mesajı kontrol et
-            ListMessagesResponse messagesResponse = service.users().messages().list(user).setMaxResults(1L).execute();
+            ListMessagesResponse messagesResponse = service.users().messages().list(user).setMaxResults(10L).execute(); // Son 10 mesajı getir
             List<Message> messages = messagesResponse.getMessages();
 
             if (messages != null && !messages.isEmpty()) {
-                String messageId = messages.get(0).getId();
+                for (Message message : messages) {
+                    String messageId = message.getId();
 
-                // Eğer son mesaj ile yeni gelen mesajın ID'si farklıysa işle
-                if (!messageId.equals(lastMessageId)) {
-                    // Yeni mesajı al
-                    Message message = service.users().messages().get(user, messageId).setFormat("raw").execute();
+                    // Mesajın zaman damgasını al
+                    long messageTimestamp = message.getInternalDate(); // Mesajın zaman damgası (milisaniye cinsinden)
 
-                    // Mesaj içeriğini çözümleme
-                    byte[] emailBytes = Base64.decodeBase64(message.getRaw());
-                    Properties props = new Properties();
-                    Session session = Session.getDefaultInstance(props, null);
-                    MimeMessage email = new MimeMessage(session, new ByteArrayInputStream(emailBytes));
+                    // Eğer mesaj son 1 dakika içinde geldiyse işle
+                    if (messageTimestamp > oneMinuteAgo) {
+                        // Yeni mesajı al
+                        message = service.users().messages().get(user, messageId).setFormat("raw").execute();
 
-                    // Mesajın içeriğini al
-                    String content = extractMessageContent(email);
+                        // Mesaj içeriğini çözümleme
+                        byte[] emailBytes = Base64.decodeBase64(message.getRaw());
+                        Properties props = new Properties();
+                        Session session = Session.getDefaultInstance(props, null);
+                        MimeMessage email = new MimeMessage(session, new ByteArrayInputStream(emailBytes));
 
-                    // 6 haneli sayıyı regex ile bul
-                    String sixDigitCode = extractSixDigitCodeFromHTML(content);
+                        // Mesajın içeriğini al
+                        String content = extractMessageContent(email);
 
-                    if (sixDigitCode != null) {
-                        // OTP kodu bulundu
-                        digit = sixDigitCode;
-                        System.out.println("Yeni gelen 6 haneli kod: " + sixDigitCode);
-                        newMessageFound = true;  // Yeni mesaj bulundu, döngüyü sonlandır
+                        // 6 haneli sayıyı regex ile bul
+                        String sixDigitCode = extractSixDigitCodeFromHTML(content);
 
-                        // Mesajı sil
-                        deleteMessage(service, messageId);
+                        if (sixDigitCode != null) {
+                            // OTP kodu bulundu
+                            digit = sixDigitCode;
+                            System.out.println("Yeni gelen 6 haneli kod: " + sixDigitCode);
+                            newMessageFound = true;  // Yeni mesaj bulundu, döngüyü sonlandır
+
+                            // Mesajı sil
+                            deleteMessage(service, messageId);
+                        } else {
+                            System.out.println("Geçerli bir OTP kodu bulunamadı.");
+                        }
+
+                        // Son mesaj ID'sini güncelle
+                        lastMessageId = messageId;
                     } else {
-                        System.out.println("Geçerli bir OTP kodu bulunamadı.");
+                        System.out.println("Mesaj son 1 dakika içinde gelmedi.");
                     }
-
-                    // Son mesaj ID'sini güncelle
-                    lastMessageId = messageId;
-                } else {
-                    System.out.println("Henüz yeni bir mesaj gelmedi.");
                 }
             } else {
                 System.out.println("Yeni mesaj yok.");
@@ -124,8 +132,8 @@ public class GmailQuickstart {
 
     // Mesajı silme metodu
     private void deleteMessage(Gmail service, String messageId) throws IOException {
-       // service.users().messages().delete(user, messageId).execute();
-       // System.out.println("Mesaj silindi: " + messageId);
+        service.users().messages().delete(user, messageId).execute();
+        System.out.println("Mesaj silindi: " + messageId);
     }
 
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {

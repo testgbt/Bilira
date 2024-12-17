@@ -204,7 +204,7 @@ public class Swap_StepDefinitions {
 
     @And("Users enters mail verification code")
     public void usersEntersMailVerificationCode() throws MessagingException, GeneralSecurityException, IOException, InterruptedException {
-        ReusableMethods.bekle(3);
+        ReusableMethods.bekle(5);
         GmailQuickstart gmailQuickstart = new GmailQuickstart(
                 ConfigReader.getProperty("email2"),
                 ConfigReader.getProperty("tokenDirectoryPath"),
