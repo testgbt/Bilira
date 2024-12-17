@@ -39,8 +39,8 @@ Bilira is a project developed using the Java programming language, integrating m
 
 Start by cloning the project:
 
-bash
-git clone https://github.com/quality1tester/BiLira.git
+bash             https://github.com/testgbt/Bilira.git
+git clone 
 cd bilira
 
 
